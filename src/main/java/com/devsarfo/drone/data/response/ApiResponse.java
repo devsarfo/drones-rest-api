@@ -1,6 +1,8 @@
 package com.devsarfo.drone.data.response;
 
 
+import org.springframework.http.ResponseEntity;
+
 public class ApiResponse
 {
 
@@ -43,4 +45,5 @@ public class ApiResponse
     public void setData(Object data) {
         this.data = data;
     }
+
 }

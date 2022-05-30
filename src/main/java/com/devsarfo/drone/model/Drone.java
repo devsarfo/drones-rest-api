@@ -3,10 +3,7 @@ package com.devsarfo.drone.model;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Table(name = "drones")
 @Entity
@@ -18,7 +15,8 @@ public class Drone
 
     }
 
-    public Drone(String serialNumber, String model, double weightLimit, double batteryCapacity, String state) {
+    public Drone(String serialNumber, String model, double weightLimit, double batteryCapacity, String state)
+    {
         this.serialNumber = serialNumber;
         this.model = model;
         this.weightLimit = weightLimit;
@@ -27,7 +25,7 @@ public class Drone
     }
 
     @Id
-    @Size(max = 100, message = "100 characters max")
+    @Size(max = 100, message = "Serial Number can be 100 characters maximum")
     @Column(nullable = false)
     private String serialNumber;
 
@@ -35,13 +33,14 @@ public class Drone
     @Column(nullable = false)
     private String model;
 
-    @NotNull
-    @Max(value = 500, message = "500 gram max")
-    @Column(nullable = false)
+    @Min(value = 0, message = "Weight limit can be 0 gram minimum")
+    @Max(value = 500, message = "Weight limit can be 500 gram maximum")
+    @Column(nullable = false, scale = 2)
     private double weightLimit;
 
-    @NotNull
-    @Column(nullable = false)
+    @Min(value = 0, message = "Battery level can be 0% minimum")
+    @Max(value = 100, message = "Battery level can be 100% maximum")
+    @Column(nullable = false, scale = 2)
     private double batteryCapacity;
 
     @NotEmpty

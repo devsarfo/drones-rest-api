@@ -16,6 +16,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/drone/")
 public class DroneController

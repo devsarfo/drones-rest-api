@@ -18,8 +18,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long>
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Delivery d SET d.dispatchAt = :dispatchAt WHERE d.id = :Id")
-    void setDispatched(@Param("dispatchAt") Instant dispatchAt, @Param("Id") Long Id);
+    @Query(value = "UPDATE Delivery d SET d.dispatchedAt = :dispatchedAt WHERE d.id = :Id")
+    void setDispatched(@Param("dispatchedAt") Instant dispatchedAt, @Param("Id") Long Id);
 
     @Modifying
     @Transactional

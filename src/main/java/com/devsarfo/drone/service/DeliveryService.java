@@ -77,7 +77,7 @@ public class DeliveryService
         droneRepository.setState("DELIVERING", delivery.getDrone());
 
         //Get Data
-        delivery.setDispatchAt(Instant.now());
+        delivery.setDispatchedAt(Instant.now());
         List<DeliveryItem> items = deliveryItemRepository.findAllByDeliveryId(delivery.getId());
 
         return new DeliveryResponse(delivery, items);

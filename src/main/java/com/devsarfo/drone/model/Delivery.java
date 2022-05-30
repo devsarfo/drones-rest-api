@@ -44,7 +44,7 @@ public class Delivery
     private Instant createdAt;
 
     @Column(nullable = true)
-    private Instant dispatchAt;
+    private Instant dispatchedAt;
 
     @Column(nullable = true)
     private Instant deliveredAt;
@@ -89,12 +89,12 @@ public class Delivery
         this.createdAt = createdAt;
     }
 
-    public Instant getDispatchAt() {
-        return dispatchAt;
+    public Instant getDispatchedAt() {
+        return dispatchedAt;
     }
 
-    public void setDispatchAt(Instant dispatchAt) {
-        this.dispatchAt = dispatchAt;
+    public void setDispatchedAt(Instant dispatchedAt) {
+        this.dispatchedAt = dispatchedAt;
     }
 
     public Instant getDeliveredAt() {

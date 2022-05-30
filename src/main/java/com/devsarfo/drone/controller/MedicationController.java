@@ -25,7 +25,7 @@ public class MedicationController
     {
         Medication medication = medicationService.register(param);
         ApiResponse response = new ApiResponse("success", "Medication created successfully", medication);
-        return new ResponseEntity<ApiResponse>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("list")
@@ -33,6 +33,6 @@ public class MedicationController
     {
         List<Medication> medications =  medicationService.findAll();
         ApiResponse response = new ApiResponse("success", "Medications loaded successfully", medications);
-        return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

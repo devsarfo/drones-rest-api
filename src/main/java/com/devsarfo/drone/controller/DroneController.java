@@ -33,7 +33,7 @@ public class DroneController
                 drone
         );
 
-        return new ResponseEntity<ApiResponse>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("available")
@@ -46,39 +46,28 @@ public class DroneController
                 drones
         );
 
-        return new ResponseEntity<ApiResponse>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("battery")
-    public ResponseEntity<ApiResponse> battery(@RequestParam(name = "serialNumber") String serialNumber)
+    @GetMapping("battery/{serialNumber}")
+    public ResponseEntity<ApiResponse> battery(@PathVariable(name = "serialNumber") String serialNumber)
     {
-        if(serialNumber.trim().isEmpty())
+        Drone drone = droneService.get(serialNumber);
+        if(drone == null)
         {
-            return new ResponseEntity<ApiResponse>(new ApiResponse(
+            return new ResponseEntity<>(new ApiResponse(
                     "error",
-                    "Serial Number is required",
+                    "Drone with serial number " + serialNumber + " not found!",
                     null
-            ), HttpStatus.BAD_REQUEST);
+            ), HttpStatus.NOT_FOUND);
         }
         else
         {
-            Drone drone = droneService.get(serialNumber);
-            if(drone == null)
-            {
-                return  new ResponseEntity<ApiResponse>(new ApiResponse(
-                        "error",
-                        "Drone with serial number "+serialNumber+" not found!",
-                        null
-                ), HttpStatus.NOT_FOUND);
-            }
-            else
-            {
-                return  new ResponseEntity<ApiResponse>(new ApiResponse(
-                        "success",
-                        "Drone loaded successfully!",
-                        new BatteryResponse(drone.getSerialNumber(), drone.getBatteryCapacity()+"%")
-                ), HttpStatus.OK);
-            }
+            return new ResponseEntity<>(new ApiResponse(
+                    "success",
+                    "Drone loaded successfully!",
+                    new BatteryResponse(drone.getSerialNumber(), drone.getBatteryCapacity() + "%")
+            ), HttpStatus.OK);
         }
     }
 }

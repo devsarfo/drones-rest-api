@@ -5,7 +5,6 @@ import com.devsarfo.drone.data.response.DeliveryResponse;
 import com.devsarfo.drone.data.response.DroneItemResponse;
 import com.devsarfo.drone.model.Delivery;
 import com.devsarfo.drone.model.DeliveryItem;
-import com.devsarfo.drone.model.Drone;
 import com.devsarfo.drone.model.Medication;
 import com.devsarfo.drone.repository.DeliveryItemRepository;
 import com.devsarfo.drone.repository.DeliveryRepository;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DispatchService
+public class DeliveryService
 {
 
     @Autowired
@@ -71,13 +70,27 @@ public class DispatchService
         return deliveryRepository.findByDrone(serialNumber);
     }
 
-    public DeliveryResponse deliver(Delivery delivery)
+    public DeliveryResponse dispatch(Delivery delivery)
     {
-        //Update Delivery
+        //Update Delivery and Drone
         deliveryRepository.setDispatched(Instant.now(), delivery.getId());
+        droneRepository.setState("DELIVERING", delivery.getDrone());
 
         //Get Data
-        delivery = deliveryRepository.findByDrone(delivery.getDrone());
+        delivery.setDispatchAt(Instant.now());
+        List<DeliveryItem> items = deliveryItemRepository.findAllByDeliveryId(delivery.getId());
+
+        return new DeliveryResponse(delivery, items);
+    }
+
+    public DeliveryResponse delivered(Delivery delivery)
+    {
+        //Update Delivery and Drone
+        deliveryRepository.setDelivered(Instant.now(), delivery.getId());
+        droneRepository.setState("IDLE", delivery.getDrone());
+
+        //Get Data
+        delivery.setDeliveredAt(Instant.now());
         List<DeliveryItem> items = deliveryItemRepository.findAllByDeliveryId(delivery.getId());
 
         return new DeliveryResponse(delivery, items);

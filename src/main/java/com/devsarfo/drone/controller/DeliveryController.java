@@ -4,13 +4,12 @@ package com.devsarfo.drone.controller;
 import com.devsarfo.drone.data.request.DeliveryRequest;
 import com.devsarfo.drone.data.request.DroneRequest;
 import com.devsarfo.drone.data.response.ApiResponse;
-import com.devsarfo.drone.data.response.BatteryResponse;
 import com.devsarfo.drone.data.response.DeliveryResponse;
 import com.devsarfo.drone.data.response.DroneItemResponse;
 import com.devsarfo.drone.model.Delivery;
 import com.devsarfo.drone.model.Drone;
 import com.devsarfo.drone.model.Medication;
-import com.devsarfo.drone.service.DispatchService;
+import com.devsarfo.drone.service.DeliveryService;
 import com.devsarfo.drone.service.DroneService;
 import com.devsarfo.drone.service.MedicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,11 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/dispatch/")
-public class DispatchController
+@RequestMapping("/api/delivery/")
+public class DeliveryController
 {
     @Autowired
-    private DispatchService dispatchService;
+    private DeliveryService dispatchService;
 
     @Autowired
     private MedicationService medicationService;
@@ -147,8 +146,33 @@ public class DispatchController
         }
     }
 
-    @PostMapping("deliver")
-    public ResponseEntity<ApiResponse> deliver(@Valid @RequestBody DroneRequest param)
+    @PostMapping("dispatch")
+    public ResponseEntity<ApiResponse> dispatch(@Valid @RequestBody DroneRequest param)
+    {
+        Delivery delivery = dispatchService.get(param.getSerialNumber());
+        if(delivery == null)
+        {
+            return new ResponseEntity<>(new ApiResponse(
+                    "error",
+                    "No delivery for drone with serial number " + param.getSerialNumber() + "!",
+                    null
+            ), HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            DeliveryResponse deliveryResponse = dispatchService.dispatch(delivery);
+            ApiResponse response = new ApiResponse(
+                    "success",
+                    "Drone dispatched successfully",
+                    deliveryResponse
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("delivered")
+    public ResponseEntity<ApiResponse> delivered(@Valid @RequestBody DroneRequest param)
     {
         Delivery delivery = dispatchService.get(param.getSerialNumber());
         if(delivery == null)
@@ -162,15 +186,14 @@ public class DispatchController
         else
         {
 
-            DeliveryResponse deliveryResponse = dispatchService.deliver(delivery);
+            DeliveryResponse deliveryResponse = dispatchService.delivered(delivery);
             ApiResponse response = new ApiResponse(
                     "success",
-                    "Drone dispatched successfully",
+                    "Drone delivered successfully",
                     deliveryResponse
             );
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
-
 }
